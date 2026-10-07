@@ -1,0 +1,16 @@
+# macOS
+.DS_*
+
+# Local configuration / secrets
+.env
+.env.*
+!env.example
+!.env.example
+
+# Bootstrap backup
+.env.bak
+
+# Editor temporary files
+*.swp
+*.swo
+*~

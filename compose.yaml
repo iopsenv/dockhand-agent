@@ -1,0 +1,31 @@
+name: x-dockhand-agent
+
+# If bootstrap.sh is not used, create external volume 
+# Read section ## Manual setup (without bootstrap.sh) 
+volumes:
+  x-dockhand_stacks:
+    external: true
+    name: "x-dockhand-stacks_${LOCAL_HOSTNAME}"
+
+services:
+  x_dockhand_agent:
+    image: ghcr.io/finsys/hawser:latest
+    container_name: x-dockhand-agent
+    hostname: dockhand.${LOCAL_HOSTNAME}
+    restart: always
+    environment:
+      - TZ=Europe/Bucharest
+      - LOG_LEVEL=warn
+      - STACKS_DIR=/data/stacks
+      - AGENT_NAME=${LOCAL_HOSTNAME}
+      - UMASK=002
+      - DOCKER_SOCKET=/var/run/docker.sock
+      # --- Obtain these values from your Dockhand Main dashboard adding 'Environments'
+      - DOCKHAND_SERVER_URL=wss://${DH_MAIN_HOSTNAME}/api/hawser/connect
+      - TOKEN=${DH_TOKEN}
+      - TLS_SKIP_VERIFY=false
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - x-dockhand_stacks:/data/stacks
+    labels:
+      - dockhand.update=true
